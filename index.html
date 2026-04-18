@@ -1496,14 +1496,36 @@ function submitReview(){
   showToast('Review posted! 🌟');
 }
 
-function orderOnInstagram(){
-  if(!currentProduct)return;
-  const msg = `Hi! I want to order:\n\n🦅 *${currentProduct.name}*\nQty: ${modalCurrentQty}\nPrice: ₹${(currentProduct.price*modalCurrentQty).toLocaleString()}\n\nPlease confirm availability.`;
-  window.open(`https://www.instagram.com/direct/t/18070918781304442`,'_blank');
-  navigator.clipboard.writeText(msg).catch(()=>{});
-  showToast('Message copied! Open Instagram DM 📷');
+function orderOnInstagram() {
+    if (!currentProduct) return;
+    
+    const message = `Hi MP Eagle! I want to order this:\n\n✨ ${currentProduct.name}\nQty: ${modalCurrentQty}\nPrice: ₹${(currentProduct.price * modalCurrentQty).toLocaleString()}`;
+    
+    // Copy to clipboard first
+    navigator.clipboard.writeText(message);
+    
+    // Open the DM link (without the ?text= which causes the error)
+    const url = `https://www.instagram.com/direct/t/18070918781304442/`;
+    
+    alert("Order details copied! Please paste them into the Instagram DM.");
+    window.open(url, '_blank');
 }
 
+function orderCartOnInstagram() {
+    if (cart.length === 0) return;
+    
+    const lines = cart.map(c => `• ${c.name} x ${c.qty} = ₹${(c.price * c.qty).toLocaleString()}`).join('\n');
+    const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+    
+    const message = `Hi MP Eagle! I want to place an order:\n\n${lines}\n\n💰 Total: ₹${total.toLocaleString()}`;
+    
+    navigator.clipboard.writeText(message);
+    
+    const url = `https://www.instagram.com/direct/t/18070918781304442/`;
+    
+    alert("Cart details copied! Please paste them into the Instagram DM.");
+    window.open(url, '_blank');
+}
 // ============ CART ============
 function addToCart(product, qty){
   const existing = cart.find(c=>c.id===product.id);
