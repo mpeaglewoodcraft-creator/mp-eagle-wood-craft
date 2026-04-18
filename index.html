@@ -1497,18 +1497,30 @@ function submitReview(){
 }
 
 function orderOnInstagram() {
-    if (!currentProduct) return;
+    // 1. Get the cart items (this depends on how your cart array is named)
+    // Assuming your cart items are stored in an array called 'cart'
+    if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+    }
+
+    let message = "Hello MP Eagle! I'd like to order the following items:%0A%0A";
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        message += `${index + 1}. ${item.name} - ₹${item.price}%0A`;
+        total += item.price;
+    });
+
+    message += `%0A*Total Amount: ₹${total}*`;
+
+    // 2. Replace 'mpeaglewoodcraft' with your actual Instagram username
+    const instagramUsername = "mpeaglewoodcraft";
     
-    const message = `Hi MP Eagle! I want to order this:\n\n✨ ${currentProduct.name}\nQty: ${modalCurrentQty}\nPrice: ₹${(currentProduct.price * modalCurrentQty).toLocaleString()}`;
-    
-    // Copy to clipboard first
-    navigator.clipboard.writeText(message);
-    
-    // Open the DM link (without the ?text= which causes the error)
-    const url = `https://www.instagram.com/direct/t/18070918781304442/`;
-    
-    alert("Order details copied! Please paste them into the Instagram DM.");
-    window.open(url, '_blank');
+    // 3. Open the Instagram DM link with the pre-filled text
+    // Note: Instagram doesn't always support direct text injection via URL like WhatsApp, 
+    // but this is the standard way to deep-link to a profile.
+    window.open(`https://ig.me/m/${instagramUsername}?text=${message}`, '_blank');
 }
 
 function orderCartOnInstagram() {
