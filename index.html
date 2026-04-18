@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>MP Eagle Wood Craft | Handcrafted Wooden Masterpieces</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
   --wood-dark: #1A0E07;
@@ -1143,13 +1144,18 @@ footer{background:var(--wood-dark);color:white;padding:3rem;border-top:1px solid
     <button class="cart-close" onclick="toggleCart()">✕</button>
   </div>
   <div class="cart-body" id="cartBody"></div>
-  <div class="cart-footer" id="cartFooter" style="display:none;">
-    <div class="cart-total-row">
-      <span class="cart-total-label">Total</span>
-      <span class="cart-total-val" id="cartTotal">₹0</span>
-    </div>
-    <button class="cart-insta-order" onclick="orderCartOnInstagram()">📷 Order on Instagram</button>
+ <div class="cart-footer" id="cartFooter" style="display:none;">
+  <div class="cart-total-row">
+    <span class="cart-total-label">Total</span>
+    <span class="cart-total-val" id="cartTotal">₹0</span>
   </div>
+
+  <button class="cart-checkout-btn" style="background: #3D1F0A; color: white; margin-bottom: 10px; width: 100%; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-family: 'Josefin Sans', sans-serif;" onclick="downloadCartPDF()">
+      📄 Download Order PDF
+  </button>
+
+  <button class="cart-insta-order" onclick="orderCartOnInstagram()">📷 Order on Instagram</button>
+</div>
 </div>
 
 <!-- WISHLIST PANEL -->
@@ -1717,6 +1723,53 @@ document.querySelectorAll('.feat-card,.testi-card,.af-card,.about-mini-stat').fo
 // ============ INIT ============
 renderCart();
 renderWishlist();
+  // Line 1724
+renderCart();
+// Line 1725
+renderWishlist();
+
+// PASTE YOUR CODE HERE (Starting at Line 1726)
+async function downloadCartPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    if (cart.length === 0) {
+        showToast("Your cart is empty!");
+        return;
+    }
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.setTextColor(61, 31, 10);
+    doc.text("MP EAGLE WOOD CRAFT", 105, 20, { align: "center" });
+    
+    doc.setFontSize(12);
+    doc.text("ORDER SUMMARY", 20, 40);
+    doc.line(20, 45, 190, 45);
+
+    let y = 55;
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    
+    cart.forEach((item) => {
+        doc.text(`${item.name}`, 20, y);
+        doc.text(`Qty: ${item.qty}`, 140, y);
+        doc.text(`Rs. ${(item.price * item.qty).toLocaleString()}`, 170, y);
+        y += 10;
+    });
+
+    const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+    doc.setFont("helvetica", "bold");
+    doc.text(`GRAND TOTAL: Rs. ${total.toLocaleString()}`, 130, y + 10);
+
+    doc.save("MPEagle_Order.pdf");
+    showToast("PDF Downloaded! Share it with us on Instagram.");
+}
+
+// Line 1761 (Approx)
+</script>
+// Line 1762
+</body>
 </script>
 </body>
 </html>
