@@ -1768,7 +1768,125 @@ async function downloadCartPDF() {
 
 // Line 1761 (Approx)
 </script>
-// Line 1762
+<!-- ===== WOOD BUTTON SOUND ===== -->
+<script>
+(function() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+
+  // Different wood sounds for different buttons
+  function playWoodKnock() {
+    const ctx = new AudioContext();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.15, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.03));
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 180;
+    filter.Q.value = 1.5;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(1.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+  }
+
+  function playWoodTap() {
+    const ctx = new AudioContext();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.1, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.015));
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 320;
+    filter.Q.value = 2;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.9, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+  }
+
+  function playWoodCreak() {
+    const ctx = new AudioContext();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.2, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const t = i / ctx.sampleRate;
+      data[i] = Math.sin(2 * Math.PI * (90 + t * 40) * t) * Math.exp(-t * 12) * 0.6
+               + (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.05)) * 0.3;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.8, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    src.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+  }
+
+  function playAddToCart() {
+    const ctx = new AudioContext();
+    // Double knock - wood block sound
+    [0, 0.08].forEach((delay, i) => {
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 0.12, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let j = 0; j < data.length; j++) {
+        data[j] = (Math.random() * 2 - 1) * Math.exp(-j / (ctx.sampleRate * 0.025));
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = i === 0 ? 200 : 260;
+      filter.Q.value = 2;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(1.0, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.12);
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      src.start(ctx.currentTime + delay);
+    });
+  }
+
+  // Assign sounds to buttons
+  document.addEventListener('click', function(e) {
+    const el = e.target.closest('button, a, .filter-btn, .nav-links a, .g-item, .qty-btn');
+    if (!el) return;
+
+    const text = (el.textContent || '').toLowerCase();
+    const cls = (el.className || '').toLowerCase();
+
+    if (text.includes('add to cart') || cls.includes('cart')) {
+      playAddToCart();
+    } else if (text.includes('shop') || text.includes('order') || cls.includes('hero')) {
+      playWoodCreak();
+    } else if (cls.includes('filter') || cls.includes('nav') || cls.includes('qty')) {
+      playWoodTap();
+    } else {
+      playWoodKnock();
+    }
+  });
+
+  console.log('🪵 Wood sounds loaded!');
+})();
+</script>
+<!-- ===== END WOOD BUTTON SOUND ===== -->
+  // Line 1762
 </body>
 </script>
 </body>
